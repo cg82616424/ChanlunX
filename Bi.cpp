@@ -16,23 +16,23 @@ std::vector<float> Bi1(int nCount, std::vector<float> pHigh, std::vector<float> 
     }
     for (unsigned int i = 1; i < kxianChuLi.kxianList.size(); i++)
     {
-        if (kxianChuLi.kxianList.at(i - 1).fangXiang != kxianChuLi.kxianList.at(i).fangXiang)
+        if (kxianChuLi.kxianList.at(i - 1).kDirection != kxianChuLi.kxianList.at(i).kDirection)
         {
-            if (kxianChuLi.kxianList.at(i - 1).fangXiang == 1)
+            if (kxianChuLi.kxianList.at(i - 1).kDirection == KDirection::KD_UP)
             {
                 pOut[kxianChuLi.kxianList.at(i - 1).zhongJian] = 1;
             }
-            else if (kxianChuLi.kxianList.at(i - 1).fangXiang == -1)
+            else if (kxianChuLi.kxianList.at(i - 1).kDirection == KDirection::KD_DOWN)
             {
                 pOut[kxianChuLi.kxianList.at(i - 1).zhongJian] = -1;
             }
         }
     }
-    if (kxianChuLi.kxianList.back().fangXiang == 1)
+    if (kxianChuLi.kxianList.back().kDirection == KDirection::KD_UP)
     {
         pOut[kxianChuLi.kxianList.back().zhongJian] = 1;
     }
-    else if (kxianChuLi.kxianList.back().fangXiang == -1)
+    else if (kxianChuLi.kxianList.back().kDirection == KDirection::KD_DOWN)
     {
         pOut[kxianChuLi.kxianList.back().zhongJian] = -1;
     }
@@ -51,11 +51,11 @@ std::vector<float> Bi2(int nCount, std::vector<float> pHigh, std::vector<float> 
     biChuLi.handle(kxianChuLi.kxianList);
     for (vector<Bi>::iterator iter = biChuLi.biList.begin(); iter != biChuLi.biList.end(); iter++)
     {
-        if ((*iter).fangXiang == 1)
+        if ((*iter).fangXiang == KDirection::KD_UP)
         {
             pOut[(*iter).kxianList.back().zhongJian] = 1;
         }
-        else if ((*iter).fangXiang == -1)
+        else if ((*iter).fangXiang == KDirection::KD_DOWN)
         {
             pOut[(*iter).kxianList.back().zhongJian] = -1;
         }

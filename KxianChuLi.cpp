@@ -15,7 +15,7 @@ void KxianChuLi::add(float gao, float di)
         Kxian kxian;
         kxian.gao = gao;
         kxian.di = di;
-        kxian.fangXiang = 1;
+        kxian.kDirection = KDirection::KD_UP;
         kxian.kaiShi = 0;
         kxian.jieShu = 0;
         kxian.zhongJian = 0;
@@ -29,7 +29,7 @@ void KxianChuLi::add(float gao, float di)
             Kxian kxian;
             kxian.gao = gao;
             kxian.di = di;
-            kxian.fangXiang = 1;
+            kxian.kDirection = KDirection::KD_UP;
             kxian.kaiShi = this->kxianList.back().jieShu + 1;
             kxian.jieShu = kxian.kaiShi;
             kxian.zhongJian = kxian.kaiShi;
@@ -42,7 +42,7 @@ void KxianChuLi::add(float gao, float di)
             Kxian kxian;
             kxian.gao = gao;
             kxian.di = di;
-            kxian.fangXiang = -1;
+            kxian.kDirection = KDirection::KD_DOWN;
             kxian.kaiShi = this->kxianList.back().jieShu + 1;
             kxian.jieShu = kxian.kaiShi;
             kxian.zhongJian = kxian.kaiShi;
@@ -52,26 +52,26 @@ void KxianChuLi::add(float gao, float di)
         else if (gao <= this->kxianList.back().gao && di >= this->kxianList.back().di)
         {
             // 前包含
-            if (this->kxianList.back().fangXiang == 1)
+            if (this->kxianList.back().kDirection == KDirection::KD_UP)
             {
-                this->kxianList.back().di = di;
+                //this->kxianList.back().di = di;
             }
             else
             {
-                this->kxianList.back().gao = gao;
+                //this->kxianList.back().gao = gao;
             }
             this->kxianList.back().jieShu = this->kxianList.back().jieShu + 1;
         }
         else
         {
             // 后包含
-            if (this->kxianList.back().fangXiang == 1)
+            if (this->kxianList.back().kDirection == KDirection::KD_UP)
             {
-                this->kxianList.back().gao = gao;
+                //this->kxianList.back().gao = gao;
             }
             else
             {
-                this->kxianList.back().di = di;
+                //this->kxianList.back().di = di;
             }
             this->kxianList.back().jieShu = this->kxianList.back().jieShu + 1;
             this->kxianList.back().zhongJian = this->kxianList.back().jieShu;

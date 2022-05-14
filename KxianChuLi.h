@@ -7,6 +7,10 @@ using namespace std;
 
 #pragma pack(push, 1)
 
+enum class KDirection {
+    KD_UP = 1, //趋势向上
+    KD_DOWN = -1 //趋势向下
+};
 // 原始K线
 struct KxianRaw
 {
@@ -19,7 +23,7 @@ struct Kxian
 {
     float gao;     // K线高
     float di;      // K线低
-    int fangXiang; // K线方向
+    KDirection kDirection; // K线方向
     int kaiShi;    // 开始K线坐标
     int jieShu;    // 结束K线坐标
     int zhongJian;

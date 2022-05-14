@@ -10,7 +10,7 @@ using namespace std;
 
 struct Bi
 {
-  int fangXiang;           // 笔方向
+  KDirection fangXiang;           // 笔方向
   int kaiShi;              // 笔起点
   int jieShu;              // 笔终点
   float gao;               // 笔最高价

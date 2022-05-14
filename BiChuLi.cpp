@@ -5,19 +5,60 @@
 #include "KxianChuLi.h"
 
 using namespace std;
-
-bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
+const size_t BI_MIN_K_NUM(4);
+bool jumpEmpty(const vector<Kxian>& tempKxianList, KDirection direction) {
+    return false;
+}
+bool ifChengbiNew(vector<Kxian>& tempKxianList, KDirection direction)
 {
-    if (tempKxianList.size() < 4)
+    if (tempKxianList.size() < BI_MIN_K_NUM && !jumpEmpty(tempKxianList, direction))
     {
         // 如果连4根K线都没有的话肯定不是笔
         return false;
     }
-    if (direction == -1)
+    if (direction == KDirection::KD_DOWN) {
+        size_t validKxianNum(1);
+        auto currDi = tempKxianList[0].di;
+        for (size_t i = 1; i < tempKxianList.size(); ++i) {
+            if (tempKxianList[i].di < currDi) {
+                currDi = tempKxianList[i].di;
+                ++validKxianNum;
+            }
+        }
+        if (validKxianNum > BI_MIN_K_NUM) {
+            return true;
+        }
+    }
+    else if (direction == KDirection::KD_UP) {
+        size_t validKxianNum(1);
+        auto currGao = tempKxianList[0].gao;
+        for (size_t i = 1; i < tempKxianList.size(); ++i) {
+            if (tempKxianList[i].gao > currGao) {
+                currGao = tempKxianList[i].gao;
+                ++validKxianNum;
+            }
+        }
+        if (validKxianNum > BI_MIN_K_NUM) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ifChengbi(vector<Kxian> &tempKxianList, KDirection direction)
+{
+    return ifChengbiNew(tempKxianList, direction);
+    if (tempKxianList.size() < BI_MIN_K_NUM)
+    {
+        // 如果连4根K线都没有的话肯定不是笔
+        return false;
+    }
+    if (direction == KDirection::KD_DOWN)
     {
         // 是不是向下成笔
         // 先找有没有下降K线
         unsigned int i = 2;
+        unsigned int valid_count(0);
         while (true)
         {
             for (; i < tempKxianList.size(); i++)
@@ -46,7 +87,7 @@ bool ifChengbi(vector<Kxian> &tempKxianList, int direction)
             i = i + 1;
         }
     }
-    else if (direction == 1)
+    else if (direction == KDirection::KD_UP)
     {
         // 是不是向上成笔
         // 先找有没有上升K线
@@ -91,7 +132,7 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
         {
             // 第一笔生成中，也是假设第一笔是向上的
             Bi bi;
-            bi.fangXiang = 1;
+            bi.fangXiang = KDirection::KD_UP;
             bi.kaiShi = (*iter).kaiShi;
             bi.jieShu = (*iter).jieShu;
             bi.gao = (*iter).gao;
@@ -101,7 +142,7 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
         }
         else
         {
-            if (this->biList.back().fangXiang == 1)
+            if (this->biList.back().fangXiang == KDirection::KD_UP)
             {
                 // 上一笔是向上笔
                 if ((*iter).gao >= this->biList.back().gao)
@@ -123,10 +164,10 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
                 {
                     tempKxianList.push_back(*iter);
                     // 有没有成新的向下笔
-                    if (ifChengbi(tempKxianList, -1))
+                    if (ifChengbi(tempKxianList, KDirection::KD_DOWN))
                     {
                         Bi bi;
-                        bi.fangXiang = -1;
+                        bi.fangXiang = KDirection::KD_DOWN;
                         bi.kaiShi = this->biList.back().jieShu;
                         bi.jieShu = tempKxianList.back().jieShu;
                         bi.di = tempKxianList.back().di;
@@ -140,7 +181,7 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
                     }
                 }
             }
-            else if (this->biList.back().fangXiang == -1)
+            else if (this->biList.back().fangXiang == KDirection::KD_DOWN)
             {
                 // 上一笔是向下笔
                 if ((*iter).di <= this->biList.back().di)
@@ -162,10 +203,10 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
                 {
                     tempKxianList.push_back(*iter);
                     // 有没有成新的向上笔
-                    if (ifChengbi(tempKxianList, 1))
+                    if (ifChengbi(tempKxianList, KDirection::KD_UP))
                     {
                         Bi bi;
-                        bi.fangXiang = 1;
+                        bi.fangXiang = KDirection::KD_UP;
                         bi.kaiShi = this->biList.back().jieShu;
                         bi.jieShu = tempKxianList.back().jieShu;
                         bi.gao = tempKxianList.back().gao;
@@ -181,14 +222,14 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
             }
         }
     }
-    if (tempKxianList.size() >= 4)
+    if (tempKxianList.size() >= BI_MIN_K_NUM)
     {
-        if (this->biList.back().fangXiang == 1)
+        if (this->biList.back().fangXiang == KDirection::KD_UP)
         {
-            if (ifChengbi(tempKxianList, -1))
+            if (ifChengbi(tempKxianList, KDirection::KD_DOWN))
             {
                 Bi bi;
-                bi.fangXiang = -1;
+                bi.fangXiang = KDirection::KD_DOWN;
                 bi.kaiShi = this->biList.back().jieShu;
                 bi.jieShu = tempKxianList.back().jieShu;
                 bi.di = tempKxianList.back().di;
@@ -201,12 +242,12 @@ void BiChuLi::handle(vector<Kxian> &kxianList)
                 this->biList.push_back(bi);
             }
         }
-        else if (this->biList.back().fangXiang == -1)
+        else if (this->biList.back().fangXiang == KDirection::KD_DOWN)
         {
-            if (ifChengbi(tempKxianList, 1))
+            if (ifChengbi(tempKxianList, KDirection::KD_UP))
             {
                 Bi bi;
-                bi.fangXiang = 1;
+                bi.fangXiang = KDirection::KD_UP;
                 bi.kaiShi = this->biList.back().jieShu;
                 bi.jieShu = tempKxianList.back().jieShu;
                 bi.gao = tempKxianList.back().gao;
