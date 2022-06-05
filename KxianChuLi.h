@@ -33,6 +33,29 @@ public:
     int zhongJian{0};
 public:
     string dumpLogInfo();
+    static vector<vector<Kxian>::iterator>::iterator getMaxMin(vector<vector<Kxian>::iterator>& tmpList, const KDirection direct) {
+        auto result = tmpList.end();
+        if (direct == KDirection::KD_UP) {
+            double highEst(0.0f);
+            for (auto it = tmpList.begin(); it != tmpList.end(); ++it) {
+                if (highEst < (*it)->gao) {
+                    highEst = (*it)->gao;
+                    result = it;
+                }
+            }
+        }
+        else if (direct == KDirection::KD_DOWN) {
+            double lowEst(999999.0f);
+            for (auto it = tmpList.begin(); it != tmpList.end(); ++it) {
+                if (lowEst > (*it)->di) {
+                    lowEst = (*it)->di;
+                    result = it;
+                }
+            }
+        }
+        return result;
+
+    }
 };
 
 class KxianChuLi

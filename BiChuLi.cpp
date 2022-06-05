@@ -90,7 +90,36 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                 // 上一笔是向上笔
                 if ((*iter).gao >= this->biList.back().gao)
                 {
-                    // 向上笔继续延续
+                    // 到了一个高点，先判断tempKxianList里边有没有创新低
+                    // 如果创新低了，说明调整下上一笔：废掉上一个向上笔，下降笔直接延伸到底点
+                    auto itLow = Kxian::getMaxMin(tempKxianList, KDirection::KD_DOWN);
+                    LOG(INFO) << "need adjust check, preLow " << (*itLow)->di << "Bilist Size: " << this->biList.size();
+                    if (this->biList.size() > 1) {
+                        auto preBiLow = this->biList[this->biList.size() - 2].di;
+                        auto direction = this->biList[this->biList.size() - 2].fangXiang;
+                        LOG(INFO) << "need adjust check, direction " << int(direction) << " preBilow: " << preBiLow;
+                        if (direction == KDirection::KD_DOWN && preBiLow > (*itLow)->di) {
+                            LOG(INFO) << "Adjust a bi, discard a up bi start Kxian" << this->biList.back().kxianList[0].dumpLogInfo() << "end Kxian " << this->biList.back().kxianList.back().dumpLogInfo();
+                            auto biTemp = this->biList.back();
+                            this->biList.pop_back();
+                            iter = *itLow;
+                            for (auto it = biTemp.kxianList.begin(); it != biTemp.kxianList.end(); it++)
+                            {
+                                this->biList.back().kxianList.push_back(*it);
+                            }
+                            LOG(INFO) << "tempKxianList have Kxian, try to add them to pre bi start Kxian:" << (*tempKxianList.begin())->dumpLogInfo() << " end Kxian:" << (*tempKxianList.back()).dumpLogInfo();
+                            for (auto it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                            {
+                                if (it == itLow) {
+                                    break;
+                                }
+                                this->biList.back().kxianList.push_back(**it);
+
+                            }
+                            tempKxianList.clear();
+                        }
+                    }
+                    // 否则，向上笔继续延续
                     this->biList.back().jieShu = (*iter).jieShu;
                     this->biList.back().gao = (*iter).gao;
                     LOG(INFO) << "up bi continue" << iter->dumpLogInfo();
@@ -133,6 +162,32 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                 // 上一笔是向下笔
                 if ((*iter).di <= this->biList.back().di)
                 {
+                    // 到了一个低点，先判断tempKxianList里边有没有创新高
+                   // 如果创新高了，说明调整下上一笔：废掉上一个向下笔，上升笔直接延伸到高点
+                    auto itHigh = Kxian::getMaxMin(tempKxianList, KDirection::KD_UP);
+                    if (this->biList.size() > 1) {
+                        auto preBiHigh = this->biList[this->biList.size() - 2].gao;
+                        auto direction = this->biList[this->biList.size() - 2].fangXiang;
+                        if (direction == KDirection::KD_DOWN && preBiHigh < (*itHigh)->gao) {
+                            LOG(INFO) << "Adjust a bi, discard a down bi start Kxian" << this->biList.back().kxianList[0].dumpLogInfo() << "end Kxian " << this->biList.back().kxianList.back().dumpLogInfo();
+                            auto biTemp = this->biList.back();
+                            this->biList.pop_back();
+                            iter = *itHigh;
+                            for (auto it = biTemp.kxianList.begin(); it != biTemp.kxianList.end(); it++)
+                            {
+                                this->biList.back().kxianList.push_back(*it);
+                            }
+                            LOG(INFO) << "tempKxianList have Kxian, try to add them to pre bi start Kxian:" << (*tempKxianList.begin())->dumpLogInfo() << " end Kxian:" << (*tempKxianList.back()).dumpLogInfo();
+                            for (auto it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                            {
+                                if (it == itHigh) {
+                                    break;
+                                }
+                                this->biList.back().kxianList.push_back(**it);
+                            }
+                            tempKxianList.clear();
+                        }
+                    }
                     // 向下笔继续延续
                     this->biList.back().jieShu = (*iter).jieShu;
                     this->biList.back().di = (*iter).di;
@@ -164,7 +219,7 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                         {
                             bi.kxianList.push_back(**it);
                         }
-                        LOG(INFO) << "new down Bi created start Kxian:" << (*tempKxianList.begin())->dumpLogInfo() << " end Kxian:" << (*tempKxianList.back()).dumpLogInfo();
+                        LOG(INFO) << "new up Bi created start Kxian:" << (*tempKxianList.begin())->dumpLogInfo() << " end Kxian:" << (*tempKxianList.back()).dumpLogInfo();
                         tempKxianList.clear();
                         this->biList.push_back(bi);
 

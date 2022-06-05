@@ -7,7 +7,7 @@ using namespace std;
 
 string Kxian::dumpLogInfo() {
     stringstream ss;
-    ss << "date: (" << dateBegin << ":" << dateEnd << ") " << "price: (" << di << ":" << gao << ")" << "direction:" << static_cast<int>(this->kDirection) << "flags: " << this->kaiShi << ":" << this->jieShu << ":" << this->zhongJian;
+    ss << "date: (" << getDate(dateBegin) << ":" << getDate(dateEnd) << ") " << "price: (" << di << ":" << gao << ")" << "direction:" << static_cast<int>(this->kDirection) << "flags: " << this->kaiShi << ":" << this->jieShu << ":" << this->zhongJian;
     return ss.str();
 }
 
