@@ -1,6 +1,10 @@
 ﻿cmake_minimum_required(VERSION 3.9)
 project (ChanlunX)
+include_directories("D:\\GitHub\\vcpkg\\installed\\x86-windows\\include")
+link_directories("D:\\GitHub\\vcpkg\\installed\\x86-windows\\lib")
 set (ChanlunX_VERSION_MAJOR 1)
 set (ChanlunX_VERSION_MINOR 0)
 aux_source_directory(. SRCS)
+
 add_library(ChanlunX SHARED ${SRCS})
+target_link_libraries(ChanlunX glog.lib gflags.lib)

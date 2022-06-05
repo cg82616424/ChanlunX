@@ -1,18 +1,19 @@
 ﻿#include <iostream>
 #include <fstream>
+#include <glog/logging.h>
 #include "Bi.h"
 #include "KxianChuLi.h"
 #include "BiChuLi.h"
 
 using namespace std;
 
-std::vector<float> Bi1(int nCount, std::vector<float> pHigh, std::vector<float> pLow)
+std::vector<float> Bi1(int nCount, std::vector<float> pHigh, std::vector<float> pLow, std::vector<int> pDate)
 {
     std::vector<float> pOut(nCount);
     KxianChuLi kxianChuLi;
     for (int i = 0; i < nCount; i++)
     {
-        kxianChuLi.add(pHigh[i], pLow[i]);
+        kxianChuLi.add(pHigh[i], pLow[i], pDate[i]);
     }
     for (unsigned int i = 1; i < kxianChuLi.kxianList.size(); i++)
     {
@@ -39,13 +40,13 @@ std::vector<float> Bi1(int nCount, std::vector<float> pHigh, std::vector<float> 
     return pOut;
 }
 
-std::vector<float> Bi2(int nCount, std::vector<float> pHigh, std::vector<float> pLow)
+std::vector<float> Bi2(int nCount, std::vector<float> pHigh, std::vector<float> pLow, std::vector<int> pDate)
 {
     std::vector<float> pOut(nCount);
     KxianChuLi kxianChuLi;
     for (int i = 0; i < nCount; i++)
     {
-        kxianChuLi.add(pHigh[i], pLow[i]);
+        kxianChuLi.add(pHigh[i], pLow[i], pDate[i]);
     }
     BiChuLi biChuLi;
     biChuLi.handle(kxianChuLi.kxianList);

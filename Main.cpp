@@ -21,11 +21,12 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserve
 //=============================================================================
 // 输出函数1号：输出简笔顶底端点
 //=============================================================================
-void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pDate)
 {
     std::vector<float> high(pHigh, pHigh + nCount);
     std::vector<float> low(pLow, pLow + nCount);
-    std::vector<float> out = Bi1(nCount, high, low);
+    std::vector<int> date(pDate, pDate + nCount);
+    std::vector<float> out = Bi1(nCount, high, low, date);
     memset(pOut, 0, nCount);
     for (int i = 0; i < nCount; i++)
     {
@@ -36,11 +37,13 @@ void Func1(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
 //=============================================================================
 // 输出函数2号：输出标准笔顶底端点
 //=============================================================================
-void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pIgnore)
+void Func2(int nCount, float *pOut, float *pHigh, float *pLow, float *pDate)
 {
+    LOG(INFO) << "Func2 to call standand Bi start, count is " << nCount;
     std::vector<float> high(pHigh, pHigh + nCount);
     std::vector<float> low(pLow, pLow + nCount);
-    std::vector<float> out = Bi2(nCount, high, low);
+    std::vector<int>  date(pDate, pDate + nCount);
+    std::vector<float> out = Bi2(nCount, high, low, date);
     memset(pOut, 0, nCount);
     for (int i = 0; i < nCount; i++)
     {
@@ -207,8 +210,13 @@ BOOL RegisterTdxFunc(PluginTCalcFuncInfo **pInfo)
 {
     if (*pInfo == NULL)
     {
+        FLAGS_log_dir = "D:\\new_tdx\\T0002\\dlls\\";
+        FLAGS_minloglevel = 0;
+        
+        FLAGS_logtostderr = 0;
+        google::InitGoogleLogging("chanlunX");
         *pInfo = Info;
-
+        LOG(INFO) << "init chanlunX finished, success";
         return TRUE;
     }
 

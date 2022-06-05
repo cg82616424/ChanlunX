@@ -10,11 +10,11 @@ using namespace std;
 
 struct Bi
 {
-  KDirection fangXiang;           // 笔方向
-  int kaiShi;              // 笔起点
-  int jieShu;              // 笔终点
-  float gao;               // 笔最高价
-  float di;                // 笔最低价
+  KDirection fangXiang{KDirection::KD_UP};           // 笔方向
+  int kaiShi{0};              // 笔起点
+  int jieShu{0};              // 笔终点
+  float gao{0.0};               // 笔最高价
+  float di{0.0};                // 笔最低价
   vector<Kxian> kxianList; // 一笔当中的K线
 };
 
