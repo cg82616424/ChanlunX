@@ -1,7 +1,8 @@
 ﻿#include "Main.h"
 #include <iostream>
 #include <fstream>
-
+#define GLOG_NO_ABBREVIATED_SEVERITIES
+#include <glog/logging.h>
 using namespace std;
 
 //定义DLL程序的入口函数
