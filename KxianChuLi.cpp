@@ -96,6 +96,8 @@ void KxianChuLi::add(float gao, float di, int date)
             {
                 //this->kxianList.back().di = di;
             }
+            this->kxianList.back().gao = gao;
+            this->kxianList.back().di = di;
             this->kxianList.back().jieShu = this->kxianList.back().jieShu + 1;
             this->kxianList.back().zhongJian = this->kxianList.back().jieShu;
         }

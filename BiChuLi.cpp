@@ -55,7 +55,7 @@ bool ifChengbiNew(vector<vector<Kxian>::iterator>& tempKxianList, KDirection dir
             return true;
         }
     }
-    LOG(INFO) << "not found 5 down Kxian, return true" << "start: (" << getDate(tempKxianList[0]->dateBegin) << ":" << getDate(tempKxianList[0]->dateEnd) << ") " << tempKxianList[0]->gao << ":" << tempKxianList[0]->di
+    LOG(INFO) << "not found 5 down/up Kxian, return false" << "start: (" << getDate(tempKxianList[0]->dateBegin) << ":" << getDate(tempKxianList[0]->dateEnd) << ") " << tempKxianList[0]->gao << ":" << tempKxianList[0]->di
         << "end :(" << getDate(tempKxianList[tempKxianList.size() - 1]->dateBegin) << ":" << getDate(tempKxianList[tempKxianList.size() - 1]->dateEnd) << ") " << tempKxianList[tempKxianList.size() - 1]->gao << ":" << tempKxianList[tempKxianList.size() - 1]->di << "size" << tempKxianList.size();
     return false;
 }
@@ -108,15 +108,20 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                                 this->biList.back().kxianList.push_back(*it);
                             }
                             LOG(INFO) << "tempKxianList have Kxian, try to add them to pre bi start Kxian:" << (*tempKxianList.begin())->dumpLogInfo() << " end Kxian:" << (*tempKxianList.back()).dumpLogInfo();
-                            for (auto it = tempKxianList.begin(); it != tempKxianList.end(); it++)
+                            for (auto it = tempKxianList.begin(); it != tempKxianList.end();)
                             {
-                                if (it == itLow) {
+                                LOG(INFO) << "erease ing";
+                                this->biList.back().kxianList.push_back(**it);
+                                //tempKxianList.erase(tempKxianList.begin()); // TODO change to list;
+                                if (it == itLow) {                                    
                                     break;
                                 }
-                                this->biList.back().kxianList.push_back(**it);
-
                             }
+                            this->biList.back().jieShu = (*itLow)->jieShu;
+                            this->biList.back().di = (*itLow)->di;
+                            //tempKxianList.erase(tempKxianList.begin());
                             tempKxianList.clear();
+                            continue;
                         }
                     }
                     // 否则，向上笔继续延续
@@ -165,10 +170,11 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                     // 到了一个低点，先判断tempKxianList里边有没有创新高
                    // 如果创新高了，说明调整下上一笔：废掉上一个向下笔，上升笔直接延伸到高点
                     auto itHigh = Kxian::getMaxMin(tempKxianList, KDirection::KD_UP);
+                    LOG(INFO) << "need adjust check, preHigh " << (*itHigh)->gao << "Bilist Size: " << this->biList.size();
                     if (this->biList.size() > 1) {
                         auto preBiHigh = this->biList[this->biList.size() - 2].gao;
                         auto direction = this->biList[this->biList.size() - 2].fangXiang;
-                        if (direction == KDirection::KD_DOWN && preBiHigh < (*itHigh)->gao) {
+                        if (direction == KDirection::KD_UP && preBiHigh < (*itHigh)->gao) {
                             LOG(INFO) << "Adjust a bi, discard a down bi start Kxian" << this->biList.back().kxianList[0].dumpLogInfo() << "end Kxian " << this->biList.back().kxianList.back().dumpLogInfo();
                             auto biTemp = this->biList.back();
                             this->biList.pop_back();
@@ -180,12 +186,18 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                             LOG(INFO) << "tempKxianList have Kxian, try to add them to pre bi start Kxian:" << (*tempKxianList.begin())->dumpLogInfo() << " end Kxian:" << (*tempKxianList.back()).dumpLogInfo();
                             for (auto it = tempKxianList.begin(); it != tempKxianList.end(); it++)
                             {
+                                LOG(INFO) << "erease ing";
+                                this->biList.back().kxianList.push_back(**it);
+                                //tempKxianList.erase(tempKxianList.begin()); // TODO change to list;
                                 if (it == itHigh) {
                                     break;
                                 }
-                                this->biList.back().kxianList.push_back(**it);
                             }
+                            this->biList.back().jieShu = (*itHigh)->jieShu;
+                            this->biList.back().gao = (*itHigh)->gao;
+                            //tempKxianList.erase(tempKxianList.begin());
                             tempKxianList.clear();
+                            continue;
                         }
                     }
                     // 向下笔继续延续
