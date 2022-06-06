@@ -108,7 +108,7 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                                 this->biList.back().kxianList.push_back(*it);
                             }
                             LOG(INFO) << "tempKxianList have Kxian, try to add them to pre bi start Kxian:" << (*tempKxianList.begin())->dumpLogInfo() << " end Kxian:" << (*tempKxianList.back()).dumpLogInfo();
-                            for (auto it = tempKxianList.begin(); it != tempKxianList.end();)
+                            for (auto it = tempKxianList.begin(); it != tempKxianList.end(); it++)
                             {
                                 LOG(INFO) << "erease ing";
                                 this->biList.back().kxianList.push_back(**it);
