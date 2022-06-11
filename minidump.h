@@ -93,6 +93,10 @@ void DisableSetUnhandledExceptionFilter()
     if (addr)
     {
         unsigned char code[16];
+
+
+
+
         int size = 0;
 
         code[size++] = 0x33;

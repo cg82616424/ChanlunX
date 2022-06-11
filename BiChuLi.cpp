@@ -93,12 +93,12 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                     // 到了一个高点，先判断tempKxianList里边有没有创新低
                     // 如果创新低了，说明调整下上一笔：废掉上一个向上笔，下降笔直接延伸到底点
                     auto itLow = Kxian::getMaxMin(tempKxianList, KDirection::KD_DOWN);
-                    LOG(INFO) << "need adjust check, preLow " << (*itLow)->di << "Bilist Size: " << this->biList.size();
                     if (this->biList.size() > 1) {
                         auto preBiLow = this->biList[this->biList.size() - 2].di;
                         auto direction = this->biList[this->biList.size() - 2].fangXiang;
                         LOG(INFO) << "need adjust check, direction " << int(direction) << " preBilow: " << preBiLow;
-                        if (direction == KDirection::KD_DOWN && preBiLow > (*itLow)->di) {
+                        if (itLow != tempKxianList.end() && direction == KDirection::KD_DOWN && preBiLow > (*itLow)->di) {
+                            LOG(INFO) << "need adjust check, preLow " << (*itLow)->di << "Bilist Size: " << this->biList.size();
                             LOG(INFO) << "Adjust a bi, discard a up bi start Kxian" << this->biList.back().kxianList[0].dumpLogInfo() << "end Kxian " << this->biList.back().kxianList.back().dumpLogInfo();
                             auto biTemp = this->biList.back();
                             this->biList.pop_back();
@@ -170,12 +170,12 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
                     // 到了一个低点，先判断tempKxianList里边有没有创新高
                    // 如果创新高了，说明调整下上一笔：废掉上一个向下笔，上升笔直接延伸到高点
                     auto itHigh = Kxian::getMaxMin(tempKxianList, KDirection::KD_UP);
-                    LOG(INFO) << "need adjust check, preHigh " << (*itHigh)->gao << "Bilist Size: " << this->biList.size();
                     if (this->biList.size() > 1) {
                         auto preBiHigh = this->biList[this->biList.size() - 2].gao;
                         auto direction = this->biList[this->biList.size() - 2].fangXiang;
-                        if (direction == KDirection::KD_UP && preBiHigh < (*itHigh)->gao) {
+                        if (itHigh != tempKxianList.end() &&  direction == KDirection::KD_UP && preBiHigh < (*itHigh)->gao) {
                             LOG(INFO) << "Adjust a bi, discard a down bi start Kxian" << this->biList.back().kxianList[0].dumpLogInfo() << "end Kxian " << this->biList.back().kxianList.back().dumpLogInfo();
+                            LOG(INFO) << "need adjust check, preHigh " << (*itHigh)->gao << "Bilist Size: " << this->biList.size();
                             auto biTemp = this->biList.back();
                             this->biList.pop_back();
                             iter = *itHigh;
