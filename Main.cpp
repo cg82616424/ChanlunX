@@ -1,4 +1,5 @@
 ﻿#include "Main.h"
+#include "minidump.h"
 #include <iostream>
 #include <fstream>
 #define GLOG_NO_ABBREVIATED_SEVERITIES
@@ -211,6 +212,7 @@ BOOL RegisterTdxFunc(PluginTCalcFuncInfo **pInfo)
 {
     if (*pInfo == NULL)
     {
+        InitMinDump();
         FLAGS_log_dir = "D:\\new_tdx\\T0002\\dlls\\";
         FLAGS_minloglevel = 0;
         
