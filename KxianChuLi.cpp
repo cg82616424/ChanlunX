@@ -7,7 +7,13 @@ using namespace std;
 
 string Kxian::dumpLogInfo() {
     stringstream ss;
-    ss << "date: (" << getDate(dateBegin) << ":" << getDate(dateEnd) << ") " << "price: (" << di << ":" << gao << ")" << "direction:" << static_cast<int>(this->kDirection) << "flags: " << this->kaiShi << ":" << this->jieShu << ":" << this->zhongJian;
+    ss << "date: (" << getDate(dateBegin) << ":" << getDate(dateEnd) << ") " << "price: (" << di << ":" << gao << ")" << "direction:" << static_cast<int>(this->kDirection) << "flags: " << this->kaiShi << ":" << this->jieShu << ":" << this->zhongJian << this->jumpty.dumpLogInfo();
+    return ss.str();
+}
+
+string JumpEmptyBehind::dumpLogInfo() {
+    stringstream ss;
+    ss << " jumpty info { direction:" << int(direc) << ", gao:" << gao << ", di:" << di << ",valid:" << valid << "}";
     return ss.str();
 }
 

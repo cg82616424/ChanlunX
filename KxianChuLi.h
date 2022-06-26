@@ -19,6 +19,14 @@ struct KxianRaw
     int date{ 0 };
 };
 
+struct JumpEmptyBehind {
+    float gao{ 0.0f };
+    float di{ 0.0f };
+    bool valid{ false };
+    KDirection direc{ KDirection::KD_UP };
+    string dumpLogInfo();
+};
+
 // 表示合并后的K线
 struct Kxian
 {
@@ -31,10 +39,12 @@ public:
     int kaiShi{0};    // 开始K线坐标
     int jieShu{0};    // 结束K线坐标
     int zhongJian{0};
+    JumpEmptyBehind jumpty; //跳空信息
 public:
     string dumpLogInfo();
     static vector<vector<Kxian>::iterator>::iterator getMaxMin(vector<vector<Kxian>::iterator>& tmpList, const KDirection direct) {
         auto result = tmpList.end();
+
         if (direct == KDirection::KD_UP) {
             double highEst(0.0f);
             for (auto it = tmpList.begin(); it != tmpList.end(); ++it) {

@@ -8,12 +8,19 @@
 
 using namespace std;
 const size_t BI_MIN_K_NUM(4);
-bool jumpEmpty(const vector<vector<Kxian>::iterator>& tempKxianList, KDirection direction) {
+//bool isJumbEmptyFillBack(float high, float low, )
+/*bool jumpEmpty(const vector<vector<Kxian>::iterator>& tempKxianList, KDirection direction) {
+    if (direction == KDirection::KD_DOWN) {
+
+    }
+    else {
+
+    }
     return false;
-}
+}*/
 bool ifChengbiNew(vector<vector<Kxian>::iterator>& tempKxianList, KDirection direction, bool updatePreBi = false, float preBiEnd = 0.0)
 {
-    if (tempKxianList.size() < BI_MIN_K_NUM && !jumpEmpty(tempKxianList, direction))
+    if (tempKxianList.size() < BI_MIN_K_NUM)
     {
         // 如果连4根K线都没有的话肯定不是笔
         LOG(INFO) << "Not a Bi, because less than 5 Kxian, size:" << tempKxianList.size();
@@ -64,7 +71,56 @@ bool ifChengbi(vector<std::vector<Kxian>::iterator> &tempKxianList, KDirection d
 {
     return ifChengbiNew(tempKxianList, direction);
 }
-
+void BiChuLi::pre_handle(vector<Kxian>& kxianList) {
+    size_t depth(3);
+    for (auto it = kxianList.begin(); it != kxianList.end(); ++it) {
+        auto cur_it = it+1;
+        if (it == kxianList.end() || cur_it == kxianList.end()) {
+            break;
+        }
+        //上升趋势跳空
+        if (it->gao < cur_it->di) {
+            size_t counter(0);
+            for (; cur_it != kxianList.end(); ++cur_it) {
+                if (it->gao < cur_it->di) {
+                    ++counter;
+                }
+                else {
+                    break;
+                }
+                if (counter >= depth) {
+                    it->jumpty.di = it->gao;
+                    it->jumpty.gao = cur_it->di;
+                    it->jumpty.valid = true;
+                    it->jumpty.direc = KDirection::KD_UP;
+                    LOG(INFO) << "found a jumpty up " << it->dumpLogInfo();
+                    break;
+                }
+            }
+        }
+        cur_it = it + 1;
+        //下降趋势跳空
+        if (it->di > cur_it->gao) {
+            size_t counter(0);
+            for (; cur_it != kxianList.end(); ++cur_it) {
+                if (it->di > cur_it->gao) {
+                    ++counter;
+                }
+                else {
+                    break;
+                }
+                if (counter >= depth) {
+                    it->jumpty.di = cur_it->gao;
+                    it->jumpty.gao = it->di;
+                    it->jumpty.valid = true;
+                    it->jumpty.direc = KDirection::KD_DOWN;
+                    LOG(INFO) << "cound a jumpty down " << it->dumpLogInfo();
+                    break;
+                }
+            }
+        }
+    }
+};
 void BiChuLi::handle(vector<Kxian>& kxianList)
 {
     vector<vector<Kxian>::iterator> tempKxianList; // 临时未成笔K线的保存
@@ -75,6 +131,7 @@ void BiChuLi::handle(vector<Kxian>& kxianList)
             // 第一笔生成中，也是假设第一笔是向上的
             Bi bi;
             bi.fangXiang = KDirection::KD_UP;
+
             bi.kaiShi = (*iter).kaiShi;
             bi.jieShu = (*iter).jieShu;
             bi.gao = (*iter).gao;

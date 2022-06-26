@@ -22,7 +22,8 @@ class BiChuLi
 {
 public:
   vector<Bi> biList; // 笔的表格
-  void handle(vector<Kxian> &kxianList);
+  void handle(vector<Kxian>& kxianList);
+  void pre_handle(vector<Kxian>& kxianList);
 };
 
 #pragma pack(pop)
