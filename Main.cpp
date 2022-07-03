@@ -214,7 +214,7 @@ BOOL RegisterTdxFunc(PluginTCalcFuncInfo **pInfo)
     {
         InitMinDump();
         FLAGS_log_dir = "D:\\new_tdx\\T0002\\dlls\\";
-        FLAGS_minloglevel = 0;
+        FLAGS_minloglevel = 1;
         
         FLAGS_logtostderr = 0;
         google::InitGoogleLogging("chanlunX");
